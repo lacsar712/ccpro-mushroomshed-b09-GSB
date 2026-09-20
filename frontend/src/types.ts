@@ -43,3 +43,34 @@ export interface DashboardStats {
   climateLast24h: number
   harvestKgLast7d: number
 }
+
+export interface CartonItem {
+  id: number
+  harvestId: number
+  roomId: number
+  harvestedAt: string
+  flushNo: number
+  weightKg: number
+  grade: HarvestGrade
+  operatorName: string
+}
+
+export interface Carton {
+  id: number
+  shedId: number
+  cartonNo: string
+  sealedAt: string | null
+  items: CartonItem[]
+  totalKg: number
+}
+
+export interface ReconcileRow {
+  shedId: number
+  shedName: string
+  cartonCount: number
+  totalKg: number
+}
+
+export interface ReconcileResponse {
+  byShed: ReconcileRow[]
+}

@@ -47,13 +47,23 @@ docker compose up --build
 3. **Room 出菇室**：`shedId`、`roomCode`、`species`、`capacityBags`、`status(fruiting|idle|sanitize)`；同菇房 `roomCode` 唯一
 4. **ClimateLog 环境记录**：`roomId`、`recordedAt`、`tempC`、`humidityPct`、`co2Ppm`、`notes`；`humidityPct ∈ [1,100]`，否则 **400**
 5. **FlushHarvest 采收**：`roomId`、`harvestedAt`、`flushNo(≥1)`、`weightKg`、`grade(A|B|C)`、`operatorName`；`weightKg > 0`，否则 **400**
-6. **Dashboard**：`shedTotal`、`fruitingRoomCount`、`climateLast24h`、`harvestKgLast7d`
+6. **Carton 拼箱**：把多笔 FlushHarvest 收进同一只纸箱
+   - 字段：`cartonNo`、`shedId`、`sealedAt`（可空）；`cartonNo` 仅在**同一 `shedId` 下唯一**，两棚撞号不串棚，归属只认 `shedId`
+   - `POST /api/cartons` 建箱（重复箱号 **409** 并带回 `cartonId`）；`GET /api/cartons?shedId=` 列表
+   - `POST /api/cartons/:id/items`（正文 `harvestId`）：该潮次的室必须属于这只棚，否则 **409**；一笔潮次只能待在一只箱里，重复加入 **409** 并带回所在 `cartonId`
+   - `DELETE /api/cartons/:id/items/:itemId` 移出条目
+   - `POST /api/cartons/:id/seal` 封箱：**封箱时箱内至少两笔潮次、且 `weightKg` 合计大于 0，否则 409 且 `sealedAt` 仍为空**；封箱后不准再加入或移出
+   - `POST /api/cartons/:id/unseal` 拆封：**仅 admin**（其他角色 403）；拆封不清空条目，但允许把其中一笔移出后改挂到另一只未封箱
+   - `GET /api/cartons/:id` 给出 `items` 与 `totalKg`
+   - `GET /api/cartons/reconcile` 给出 `byShed` 的箱数与公斤，箱侧汇总与明细求和双路核对，差不超过 **0.001**
+   - 已拼入箱的潮次不能直接删除，需先移出（**409**，带回 `cartonId`）
+7. **Dashboard**：`shedTotal`、`fruitingRoomCount`、`climateLast24h`、`harvestKgLast7d`
 
-各实体 API：`GET/POST` 列表与创建、`DELETE` 按 ID 删除。
+各实体 API：`GET/POST` 列表与创建、`DELETE` 按 ID 删除。拼箱另有封箱 / 拆封 / 条目加移 / reconcile 端点。
 
 ## 前端页面
 
-Login · Dashboard · Sheds · Rooms · ClimateLogs · FlushHarvests（侧边栏布局）
+Login · Dashboard · Sheds · Rooms · ClimateLogs · FlushHarvests（侧边栏布局）。在**菇房页**点「拼箱」进入该棚的拼箱页（`/sheds/:shedId/cartons`）：建箱、加入本棚潮次、移出、封箱（**至少两笔才可封**）、admin 拆封，并展示 byShed 对账汇总；接口失败时原文展示。
 
 ## 本地开发（可选）
 

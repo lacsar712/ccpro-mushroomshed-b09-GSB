@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 
 from app.database import SessionLocal
+from app.models.carton import CartonItem
 from app.models.flush_harvest import FlushHarvest
 from app.models.room import Room
 from app.schemas.flush_harvest import FlushHarvestCreateSchema, FlushHarvestOutSchema
@@ -66,6 +67,12 @@ def delete_flush_harvest(harvest_id: int):
         item = db.query(FlushHarvest).filter(FlushHarvest.id == harvest_id).first()
         if not item:
             return jsonify({"detail": "采收记录不存在"}), 404
+        linked = db.query(CartonItem).filter(CartonItem.harvest_id == item.id).first()
+        if linked:
+            return (
+                jsonify({"detail": "该潮次已拼入纸箱，需先移出才能删除", "cartonId": linked.carton_id}),
+                409,
+            )
         db.delete(item)
         db.commit()
         return "", 204

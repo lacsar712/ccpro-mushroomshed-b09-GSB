@@ -1,5 +1,6 @@
 import { createSignal, onMount } from 'solid-js'
 import { For } from 'solid-js'
+import { A } from '@solidjs/router'
 import { api } from '../api/client'
 import type { Shed } from '../types'
 
@@ -89,7 +90,7 @@ export default function Sheds() {
               <th>名称</th>
               <th>位置</th>
               <th>备注</th>
-              <th />
+              <th>操作</th>
             </tr>
           </thead>
           <tbody>
@@ -101,7 +102,15 @@ export default function Sheds() {
                   <td>{r.location}</td>
                   <td>{r.notes || '—'}</td>
                   <td>
-                    <button type="button" class="btn ghost" onClick={() => remove(r.id)}>
+                    <A class="btn ghost" href={`/sheds/${r.id}/cartons`}>
+                      拼箱
+                    </A>
+                    <button
+                      type="button"
+                      class="btn ghost"
+                      style={{ 'margin-left': '8px' }}
+                      onClick={() => remove(r.id)}
+                    >
                       删除
                     </button>
                   </td>
