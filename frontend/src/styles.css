@@ -357,3 +357,33 @@ th {
     grid-column: auto;
   }
 }
+
+/* ---- Carton 拼箱 ---- */
+.carton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.carton-card {
+  margin: 0;
+}
+
+.carton-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.carton-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.small {
+  font-size: 12px;
+}

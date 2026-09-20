@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 from app.config import settings
-from app.routes import auth, climate_logs, dashboard, flush_harvests, rooms, sheds
+from app.routes import auth, cartons, climate_logs, dashboard, flush_harvests, rooms, sheds
 
 
 def create_app() -> Flask:
@@ -19,6 +19,7 @@ def create_app() -> Flask:
     app.register_blueprint(rooms.bp)
     app.register_blueprint(climate_logs.bp)
     app.register_blueprint(flush_harvests.bp)
+    app.register_blueprint(cartons.bp)
     app.register_blueprint(dashboard.bp)
 
     @app.get("/api/health")

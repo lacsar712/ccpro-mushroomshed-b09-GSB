@@ -8,6 +8,7 @@ import Sheds from './pages/Sheds'
 import Rooms from './pages/Rooms'
 import ClimateLogs from './pages/ClimateLogs'
 import FlushHarvests from './pages/FlushHarvests'
+import Cartons from './pages/Cartons'
 
 function AuthedLayout(props: ParentProps): JSX.Element {
   return (
@@ -24,6 +25,7 @@ export default function App() {
       <Route path="/" component={AuthedLayout}>
         <Route path="/" component={Dashboard} />
         <Route path="/sheds" component={Sheds} />
+        <Route path="/sheds/:id/cartons" component={Cartons} />
         <Route path="/rooms" component={Rooms} />
         <Route path="/climate-logs" component={ClimateLogs} />
         <Route path="/flush-harvests" component={FlushHarvests} />

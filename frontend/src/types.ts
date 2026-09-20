@@ -37,6 +37,43 @@ export interface FlushHarvest {
   operatorName: string
 }
 
+export interface CartonItem {
+  harvestId: number
+  roomId: number
+  harvestedAt: string
+  flushNo: number
+  weightKg: number
+  grade: HarvestGrade
+  operatorName: string
+}
+
+export interface Carton {
+  id: number
+  shedId: number
+  cartonNo: string
+  sealedAt?: string | null
+  items: CartonItem[]
+  totalKg: number
+}
+
+export interface ReconcileByShed {
+  shedId: number
+  shedName: string | null
+  cartonCount: number
+  cartonKg: number
+  itemKg: number
+  deltaKg: number
+}
+
+export interface Reconcile {
+  byShed: ReconcileByShed[]
+  totalCartons: number
+  cartonKg: number
+  itemKg: number
+  deltaKg: number
+  balanced: boolean
+}
+
 export interface DashboardStats {
   shedTotal: number
   fruitingRoomCount: number
